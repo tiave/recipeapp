@@ -17,11 +17,12 @@ from 'react-native';
 
 export default function Search({ navigation }) {
     const [hakusana, setHakusana] = useState('');
-    const [hakuehto, setHakuehto] = useState(''); //alasvetovalikosta otetaan steittiin
+    const [hakuehto, setHakuehto] = useState('ainesosa'); //alasvetovalikosta otetaan steittiin
     const [reseptit, setReseptit] = useState([]);
 
     const haeReseptit = () => {
         if (hakuehto === "ainesosa") {
+            // hae ainesosan perusteella esim. tomato
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${hakusana}`)
             .then(response => response.json())
             .then((data) => {
@@ -34,7 +35,7 @@ export default function Search({ navigation }) {
             .catch(err => Alert.alert("Error", "something went wrong"))
         }
         else if (hakuehto === "maanosa") {
-            // hae maanosan perusteella
+            // hae maan perusteella esim. japanese
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${hakusana}`)
             .then(response => response.json())
             .then((data) => {
@@ -60,21 +61,7 @@ export default function Search({ navigation }) {
             .catch(err => Alert.alert("Error", "something went wrong"))
         }
     }
-
-
-
-  /*   const haeAinesosalla = () => {
-        fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${hakusana}`)
-        .then(response => response.json())
-        .then((data) => {
-        if (data.meals == null) {
-            alert("No results");
-        } else {
-            setReseptit(data.meals)
-        }
-        })
-        .catch(err => Alert.alert("Error", "something went wrong"))
-    } */
+    
 
     return(
     <View style={styles.container}>
@@ -98,7 +85,10 @@ export default function Search({ navigation }) {
             keyExtractor={item => item.idMeal}
             renderItem={({item}) => 
             <View style={{margin: 10}}>
-                <Text style={{fontSize: 18, fontWeight: 'bold'}} onPress={() => navigation.navigate("MealDetails", { item })}>{item.strMeal}</Text>
+                <Text
+                    style={{fontSize: 18, fontWeight: 'bold'}}
+                    onPress={() => navigation.navigate("MealDetails", { item })}>{item.strMeal}
+                </Text>
                 <Image style={{height: 50, width: 50}} source={{uri: item.strMealThumb }}></Image>
             </View>
             }
