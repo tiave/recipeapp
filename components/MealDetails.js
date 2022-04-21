@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
-import { ListItem } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 
 
@@ -25,21 +24,21 @@ export default function MealDetails({ route }) {
         }, [item]))
 
 
-        // pitäisi käynnistyä kun resepti-state päivittynyt
-        // nyt käynnistyy 2 kertaa per render
-        useEffect(() => {
-            aineksetListaksi();
-        }, [resepti])
+    // pitäisi käynnistyä kun resepti-state päivittynyt
+    // nyt käynnistyy 2 kertaa per render
+    useEffect(() => {
+        aineksetListaksi();
+    }, [resepti])
 
-   
-        // tehdään ainesosista taulukko
-        const aineksetListaksi = () => {
-            console.log('listan teossa')
-            ainesosaLista.push(resepti.strIngredient1);
-            ainesosaLista.push(resepti.strIngredient2);
-            //jne
-            console.log(ainesosaLista)
-        }
+
+    // tehdään ainesosista taulukko
+    const aineksetListaksi = () => {
+        console.log('listan teossa')
+        ainesosaLista.push(resepti.strIngredient1);
+        ainesosaLista.push(resepti.strIngredient2);
+        //jne
+        console.log(ainesosaLista)
+    }
    
     return (
         <View>
