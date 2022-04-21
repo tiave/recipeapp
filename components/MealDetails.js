@@ -44,7 +44,7 @@ export default function MealDetails({ route }) {
         <View>
             <Text>{resepti.strMeal}</Text>
             <Image style={{height: 200, width: 200}} source={{uri: resepti.strMealThumb }}></Image>
-            <FlatList>
+            {/* <FlatList>
                 data={ainesosaLista}
                 keyExtractor={ item => item.id}
                 renderItem={({ item }) =>
@@ -52,7 +52,7 @@ export default function MealDetails({ route }) {
                         <Text>{item}</Text>
                     </View>
                 }
-            </FlatList>
+            </FlatList> */}
             <Text>{resepti.strInstructions}</Text>
         </View>
     );
