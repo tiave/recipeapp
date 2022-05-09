@@ -7,7 +7,7 @@ import * as SQLite from 'expo-sqlite';
 export default function MealDetails({ route }) {
     const { item } = route.params;
     const [resepti, setResepti] = useState([]);
-    const reseptiTeksti = resepti.toString(); //tietokantaan tekstimuodossa?
+    const reseptiTeksti = JSON.stringify(resepti); //tietokantaan tekstimuodossa?
     const [ainesosaLista, setAinesosaLista] = useState([]);
     const [määrät, setMäärät] = useState([]);
     const [suosikit, setSuosikit] = useState([]);
@@ -31,13 +31,11 @@ export default function MealDetails({ route }) {
 
     const addToFavorites = () => {
         db.transaction(tx => {
-        tx.executeSql('insert into recipe (content) values (?);'
+        tx.executeSql('insert into recipe (content) value (?);'
         ,  [reseptiTeksti]);
         }, null, updateList);
         console.log('tallennettu')
-        console.log(suosikit)
     }
-
 
     useFocusEffect(
         useCallback(() => {
@@ -88,7 +86,6 @@ export default function MealDetails({ route }) {
                 }
             })
             .catch(err => console.log("Error", "something went wrong"))
-            console.log(item.idMeal)
         }, [item]))
 
 
