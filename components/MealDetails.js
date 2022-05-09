@@ -1,16 +1,44 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, FlatList, Button } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import Profile from './Profile';
+import * as SQLite from 'expo-sqlite';
 
 
 export default function MealDetails({ route }) {
     const { item } = route.params;
     const [resepti, setResepti] = useState([]);
+    const reseptiTeksti = resepti.toString(); //tietokantaan tekstimuodossa?
     const [ainesosaLista, setAinesosaLista] = useState([]);
     const [määrät, setMäärät] = useState([]);
-    const [favorites, setFavorites] = useState([]);
+    const [suosikit, setSuosikit] = useState([]);
     
+    const db = SQLite.openDatabase('recipes.db');
+
+    useEffect(() =>
+        {db.transaction(tx => {
+            tx.executeSql('create table if not exists recipe(id integer primary key not null, content text);'
+        );  },
+        null, updateList);
+    }, []);
+
+    const updateList = () => {
+        db.transaction(tx => {
+            tx.executeSql('select * from recipe;', [], (_, { rows }) =>
+            setSuosikit(rows._array)
+            );
+        }, null, null);
+    }
+
+    const addToFavorites = () => {
+        db.transaction(tx => {
+        tx.executeSql('insert into recipe (content) values (?);'
+        ,  [reseptiTeksti]);
+        }, null, updateList);
+        console.log('tallennettu')
+        console.log(suosikit)
+    }
+
+
     useFocusEffect(
         useCallback(() => {
             fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${item.idMeal}`)
@@ -63,12 +91,8 @@ export default function MealDetails({ route }) {
             console.log(item.idMeal)
         }, [item]))
 
-        const addToFavorites = () => {
-            setFavorites([...favorites, resepti])
-        }
 
-        console.log(favorites[0])
-        //pitäisi saada lähetettyä ajantasainen favorites-taulukko profile-komponenttiin
+        //pitäisi saada lähetettyä ajantasainen suosikit-lista profile-komponenttiin
 
     // TODO: ehdollisuus suosikkinappulaan eli renderöikö "lisää" vai "poista"
 
@@ -90,5 +114,6 @@ export default function MealDetails({ route }) {
             <Text style={{fontSize: 18}}>How to make</Text>
             <Text>{resepti.strInstructions}</Text>
         </ScrollView>
-    );
-};
+    )
+
+}

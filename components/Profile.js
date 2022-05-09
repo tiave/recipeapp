@@ -2,15 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 
 
-export default function Profile({ props, navigation}) {
+export default function Profile({ suosikit }) {
 
-    
 
     return (
         <View>
             <Text>Favourite recipes:</Text>
              <FlatList style={{width: 80 + '%'}}
-                data={props.favorites} //miten viitataan
+                data={suosikit} //miten viitataan
                 keyExtractor={item => item.idMeal}
                 renderItem={({item}) => 
                 <View style={{margin: 10}}>
