@@ -1,59 +1,94 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, FlatList, Button } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import Profile from './Profile';
 
 
 export default function MealDetails({ route }) {
     const { item } = route.params;
     const [resepti, setResepti] = useState([]);
     const [ainesosaLista, setAinesosaLista] = useState([]);
+    const [määrät, setMäärät] = useState([]);
+    const [favorites, setFavorites] = useState([]);
     
     useFocusEffect(
         useCallback(() => {
             fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${item.idMeal}`)
             .then(response => response.json())
-                .then((data) => {
+            .then((data) => {
                 if (data.meals == null) {
                     alert("No results");
                 } else {
-                    setResepti(data.meals[0])
                     console.log('fetchaa')
+                    setResepti(data.meals[0])
+                    setAinesosaLista([
+                        data.meals[0].strIngredient1,
+                        data.meals[0].strIngredient2,
+                        data.meals[0].strIngredient3,
+                        data.meals[0].strIngredient4,
+                        data.meals[0].strIngredient5,
+                        data.meals[0].strIngredient6,
+                        data.meals[0].strIngredient7,
+                        data.meals[0].strIngredient8,
+                        data.meals[0].strIngredient9,
+                        data.meals[0].strIngredient10,
+                        data.meals[0].strIngredient11,
+                        data.meals[0].strIngredient12,
+                        data.meals[0].strIngredient13,
+                        data.meals[0].strIngredient14,
+                        data.meals[0].strIngredient15,
+
+                    ])
+                    setMäärät([
+                        data.meals[0].strMeasure1,
+                        data.meals[0].strMeasure2,
+                        data.meals[0].strMeasure3,
+                        data.meals[0].strMeasure4,
+                        data.meals[0].strMeasure5,
+                        data.meals[0].strMeasure6,
+                        data.meals[0].strMeasure7,
+                        data.meals[0].strMeasure8,
+                        data.meals[0].strMeasure9,
+                        data.meals[0].strMeasure10,
+                        data.meals[0].strMeasure11,
+                        data.meals[0].strMeasure12,
+                        data.meals[0].strMeasure13,
+                        data.meals[0].strMeasure14,
+                        data.meals[0].strMeasure15,
+
+                    ])
                 }
             })
             .catch(err => console.log("Error", "something went wrong"))
+            console.log(item.idMeal)
         }, [item]))
 
+        const addToFavorites = () => {
+            setFavorites([...favorites, resepti])
+        }
 
-    // pitäisi käynnistyä kun resepti-state päivittynyt
-    // nyt käynnistyy 2 kertaa per render
-    useEffect(() => {
-        aineksetListaksi();
-    }, [resepti])
+        console.log(favorites[0])
+        //pitäisi saada lähetettyä ajantasainen favorites-taulukko profile-komponenttiin
 
+    // TODO: ehdollisuus suosikkinappulaan eli renderöikö "lisää" vai "poista"
 
-    // tehdään ainesosista taulukko
-    const aineksetListaksi = () => {
-        console.log('listan teossa')
-        ainesosaLista.push(resepti.strIngredient1);
-        ainesosaLista.push(resepti.strIngredient2);
-        //jne
-        console.log(ainesosaLista)
-    }
-   
     return (
-        <View>
-            <Text>{resepti.strMeal}</Text>
+        <ScrollView>
+            <Text style={{fontSize: 18}}>{resepti.strMeal}</Text>
+            <Button title="add to favorites" onPress={addToFavorites} />
             <Image style={{height: 200, width: 200}} source={{uri: resepti.strMealThumb }}></Image>
-            {/* <FlatList>
+            <Text style={{fontSize: 18}}>Ingredients:</Text>
+            <FlatList style={{width: 80 + '%'}}
                 data={ainesosaLista}
-                keyExtractor={ item => item.id}
-                renderItem={({ item }) =>
+                extraData={määrät}
+                keyExtractor={item => item.index}
+                renderItem={({ item, index }) => (
                     <View>
-                        <Text>{item}</Text>
+                        <Text>{item}, {määrät[index]}</Text>
                     </View>
-                }
-            </FlatList> */}
+                )}/>
+            <Text style={{fontSize: 18}}>How to make</Text>
             <Text>{resepti.strInstructions}</Text>
-        </View>
+        </ScrollView>
     );
 };

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from'@react-navigation/bottom-tabs';
 import Search from './components/Search';
 import Profile from './components/Profile';
 import MealDetails from './components/MealDetails';
+import FilteredList from './components/FilteredList';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -17,9 +18,15 @@ export default function App() {
         <Tab.Screen name='MealDetails' component={MealDetails}
             options={{
               tabBarButton: () => null,
-              tabBarVisible:false //hide tab bar on this screen
+              tabBarVisible:false // mealdetails-nimistä täppää ei näy alapalkissa
       
             }}/>
+        <Tab.Screen name='FilteredList' component={FilteredList}
+          options={{
+            tabBarButton: () => null,
+            tabBarVisible:false // filteredlist-nimistä täppää ei näy alapalkissa
+    
+          }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
