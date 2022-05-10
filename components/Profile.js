@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 
 export default function Profile({ suosikit }) {
     //const [empty, setEmpty] = useState([]);
-    var jsonResepti = JSON.stringify(suosikit);
+    
 
 /* 
     useEffect(() =>
@@ -41,20 +41,20 @@ export default function Profile({ suosikit }) {
           </View>
         );
       } */
-      console.log(jsonResepti)
+   
 
     return (
         <View>
             <Text>Favourite recipes:</Text>
             {/* {empty ? emptyMSG(empty) : */}
             <FlatList style={{width: 80 + '%'}}
-                data={jsonResepti}
-                keyExtractor={(item, index) => index.toString()}
+                data={suosikit}
+                keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => 
                 <View style={{margin: 10}}>
                     <Text
                         style={{fontSize: 18, fontWeight: 'bold'}}
-                        onPress={() => navigation.navigate("MealDetails", { item })}>{item.strMeal}
+                        onPress={() => navigation.navigate("MealDetails", { item })}>{item.name}
                     </Text>
                     <Image style={{height: 50, width: 50}} source={{uri: item.strMealThumb}}></Image>
                 </View>

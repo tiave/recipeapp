@@ -17,7 +17,7 @@ export default function MealDetails({ route }) {
 
     useEffect(() =>
         {db.transaction(tx => {
-            tx.executeSql('create table if not exists recipe(id integer primary key not null, content text);'
+            tx.executeSql('create table if not exists recipe(id integer primary key not null, name text);'
         );  },
         null, updateList);
     }, []);
@@ -33,8 +33,8 @@ export default function MealDetails({ route }) {
 
     const addToFavorites = () => {
         db.transaction(tx => {
-        tx.executeSql('insert into recipe (id, content) values (?, ?);',
-        [resepti.idMeal, reseptiTeksti]);
+        tx.executeSql('insert into recipe (id, name) values (?, ?);',
+        [resepti.idMeal, resepti.strMeal]);
         }, null, updateList);
         viewTable();
     };
