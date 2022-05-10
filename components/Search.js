@@ -8,6 +8,7 @@ import { StyleSheet,
     FlatList,
     Image }
 from 'react-native';
+import { Icon, FontAwesomeIcon } from 'react-native-elements';
 
  // varmaan joku alasvetovalikko mistä valitsee esim.
     // "raaka-aine" "maa" "ainesosa" "kategoria" tms.
@@ -125,39 +126,26 @@ export default function Search({ navigation }) {
 
     return(
         <View style={styles.container}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 50 }}>
                 <Picker
                 selectedValue={hakuehto}
-                style={{ height: 50, width: 150 }}
+                style={{ height: 50, width: 130 }}
                 onValueChange={(itemValue, itemIndex) => setHakuehto(itemValue)} >
                     <Picker.Item label="ainesosa" value="ainesosa" />
                     <Picker.Item label="maanosa" value="maanosa" />
                     <Picker.Item label="kategoria" value="kategoria" />
                     <Picker.Item label="nimi" value="nimi" />
                 </Picker>
-                {/* <Picker
-                selectedValue={listaValinta}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue, itemIndex) => setListaValinta(itemValue)} >
-                    <Picker.Item label="kategoriat" value="kategoriat" />
-                    <Picker.Item label="maat" value="maat" />
-                </Picker> */}
-                <TextInput
-                    style={{ width: 200, borderColor: 'grey', borderWidth: 1}}
+                <TextInput style={styles.textinput}
                     placeholder="hakusana"
                     onChangeText={text => setHakusana(text)}
                     value={hakusana}
                 />
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title="Hae" onPress={haeReseptit} />
-                <Button title="Random" onPress={haeRandomResepti} />
-                {/* <Button title="Listaa" onPress={haeLista} /> */}
-            </View>
-            <View style={{flexDirection: 'row'}}>
-                {/* <Text onPress={listaaKategoriat}>categories</Text> */}
-                {/* <Text onPress={() => }>areas, </Text>
-                <Text onPress={() => }>ingredients </Text> */}
+                <Button title="Hae resepti" onPress={haeReseptit} />
+                <Icon type ="material" name="casino" color="blue" onPress={haeRandomResepti} />
+                
             </View>
             <FlatList style={{width: 80 + '%'}}
                 data={reseptit}
@@ -192,10 +180,13 @@ export default function Search({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 30,
-    marginTop: 50,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+    textinput: {
+      borderColor: 'grey',
+      width: 70 + '%',
+      margin: 8
+    }
+  });

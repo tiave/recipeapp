@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from'@react-navigation/native';
+import { getFocusedRouteNameFromRoute, NavigationContainer } from'@react-navigation/native';
 import { createBottomTabNavigator } from'@react-navigation/bottom-tabs';
+import { Icon } from 'react-native-elements';
 import Search from './components/Search';
 import Profile from './components/Profile';
 import MealDetails from './components/MealDetails';
@@ -13,8 +14,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name='Search' component={Search} />
-        <Tab.Screen name='Profile' component={Profile} />
+        <Tab.Screen name='Search' component={Search}
+            options={{
+              tabBarIcon: () => (
+                <Icon name="search" color="blue" />)
+            }} />
+        <Tab.Screen name='Profile' component={Profile}
+            options={{
+                  tabBarIcon: () => (
+                    <Icon name="favorite" color="blue" />)
+                }} />
         <Tab.Screen name='MealDetails' component={MealDetails}
             options={{
               tabBarButton: () => null,
