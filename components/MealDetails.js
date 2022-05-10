@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Image, FlatList, Button } from 'rea
 import { useFocusEffect } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
 
+const db = SQLite.openDatabase('recipes.db');
 
 export default function MealDetails({ route }) {
     const { item } = route.params;
@@ -11,8 +12,8 @@ export default function MealDetails({ route }) {
     const [ainesosaLista, setAinesosaLista] = useState([]);
     const [määrät, setMäärät] = useState([]);
     const [suosikit, setSuosikit] = useState([]);
+    // const [empty, setEmpty] = useState([]);
     
-    const db = SQLite.openDatabase('recipes.db');
 
     useEffect(() =>
         {db.transaction(tx => {
@@ -24,17 +25,44 @@ export default function MealDetails({ route }) {
     const updateList = () => {
         db.transaction(tx => {
             tx.executeSql('select * from recipe;', [], (_, { rows }) =>
-            setSuosikit(rows._array)
+                setSuosikit(rows._array)
             );
         }, null, null);
     }
+    
 
     const addToFavorites = () => {
         db.transaction(tx => {
-        tx.executeSql('insert into recipe (content) value (?);'
-        ,  [reseptiTeksti]);
+        tx.executeSql('insert into recipe (id, content) values (?, ?);',
+        [resepti.idMeal, reseptiTeksti]);
         }, null, updateList);
-        console.log('tallennettu')
+        viewTable();
+    };
+
+    const deleteItem = (id) => {
+        db.transaction(tx => {
+            tx.executeSql('delete from recipe where id = ?;',
+            [id]);
+        }, null, updateList);
+        viewTable();
+    };
+
+
+    const viewTable = () => {
+        db.transaction((tx) => {
+            tx.executeSql(
+            'SELECT * FROM recipe',
+            [],
+            (tx, results) => {
+                var temp = [];
+                for (let i = 0; i < results.rows.length; ++i)
+                temp.push(results.rows.item(i));
+                console.log(temp);
+                console.log(suosikit)
+            }
+            );
+        });
+   
     }
 
     useFocusEffect(
@@ -88,7 +116,7 @@ export default function MealDetails({ route }) {
             .catch(err => console.log("Error", "something went wrong"))
         }, [item]))
 
-
+        console.log(resepti.idMeal)
         //pitäisi saada lähetettyä ajantasainen suosikit-lista profile-komponenttiin
 
     // TODO: ehdollisuus suosikkinappulaan eli renderöikö "lisää" vai "poista"
@@ -97,6 +125,7 @@ export default function MealDetails({ route }) {
         <ScrollView>
             <Text style={{fontSize: 18}}>{resepti.strMeal}</Text>
             <Button title="add to favorites" onPress={addToFavorites} />
+            <Button title="delete fav" onPress={() => deleteItem(resepti.idMeal)} />
             <Image style={{height: 200, width: 200}} source={{uri: resepti.strMealThumb }}></Image>
             <Text style={{fontSize: 18}}>Ingredients:</Text>
             <FlatList style={{width: 80 + '%'}}
