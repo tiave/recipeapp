@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
+import * as SQLite from 'expo-sqlite';
+import { suosikit, db } from './MealDetails';
 
-export default function Profile({ suosikit }) {
+export default function Profile() {
     //const [empty, setEmpty] = useState([]);
-    
+   
+    console.log(suosikit)
 
 /* 
     useEffect(() =>
@@ -30,8 +33,8 @@ export default function Profile({ suosikit }) {
             }
             ));
         });
-    }
-
+    } */
+/* 
     const emptyMSG = (status) => {
         return (
           <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>

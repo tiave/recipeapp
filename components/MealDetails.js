@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, FlatList, Button } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
+import { ListItem, Icon } from 'react-native-elements';
 
-const db = SQLite.openDatabase('recipes.db');
 
 export default function MealDetails({ route }) {
     const { item } = route.params;
@@ -14,6 +14,7 @@ export default function MealDetails({ route }) {
     const [suosikit, setSuosikit] = useState([]);
     // const [empty, setEmpty] = useState([]);
     
+    const db = SQLite.openDatabase('recipes.db');
 
     useEffect(() =>
         {db.transaction(tx => {
@@ -30,13 +31,12 @@ export default function MealDetails({ route }) {
         }, null, null);
     }
     
-
     const addToFavorites = () => {
         db.transaction(tx => {
         tx.executeSql('insert into recipe (id, name) values (?, ?);',
         [resepti.idMeal, resepti.strMeal]);
         }, null, updateList);
-        viewTable();
+        console.log(suosikit)
     };
 
     const deleteItem = (id) => {
@@ -58,7 +58,7 @@ export default function MealDetails({ route }) {
                 for (let i = 0; i < results.rows.length; ++i)
                 temp.push(results.rows.item(i));
                 console.log(temp);
-                console.log(suosikit)
+                
             }
             );
         });
@@ -113,18 +113,20 @@ export default function MealDetails({ route }) {
                     ])
                 }
             })
+            .then(updateList)
             .catch(err => console.log("Error", "something went wrong"))
         }, [item]))
 
-        console.log(resepti.idMeal)
         //pitäisi saada lähetettyä ajantasainen suosikit-lista profile-komponenttiin
 
     // TODO: ehdollisuus suosikkinappulaan eli renderöikö "lisää" vai "poista"
 
     return (
         <ScrollView>
-            <Text style={{fontSize: 18}}>{resepti.strMeal}</Text>
-            <Button title="add to favorites" onPress={addToFavorites} />
+            <View style={{flexDirection: 'row'}}>
+                <Text style={{fontSize: 18, marginRight: 15}}>{resepti.strMeal}</Text>
+                <Icon type="material" color="red" name="favorite-border" onPress={addToFavorites} />
+            </View>
             <Button title="delete fav" onPress={() => deleteItem(resepti.idMeal)} />
             <Image style={{height: 200, width: 200}} source={{uri: resepti.strMealThumb }}></Image>
             <Text style={{fontSize: 18}}>Ingredients:</Text>
@@ -133,9 +135,12 @@ export default function MealDetails({ route }) {
                 extraData={määrät}
                 keyExtractor={item => item.index}
                 renderItem={({ item, index }) => (
-                    <View>
-                        <Text>{item}, {määrät[index]}</Text>
-                    </View>
+                    <ListItem bottomDivider>
+                        <ListItem.Content>
+                            <ListItem.Title>{item}</ListItem.Title>
+                            <ListItem.Subtitle>{määrät[index]}</ListItem.Subtitle>
+                        </ListItem.Content>
+                    </ListItem>
                 )}/>
             <Text style={{fontSize: 18}}>How to make</Text>
             <Text>{resepti.strInstructions}</Text>
@@ -143,3 +148,18 @@ export default function MealDetails({ route }) {
     )
 
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    textinput: {
+      borderColor: 'grey',
+      width: 70 + '%',
+      margin: 8
+    }
+  
+  });
