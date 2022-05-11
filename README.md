@@ -42,3 +42,7 @@ Run the app on web browser or with Expo application / an emulator.
    ```sh
    expo start
    ```
+### Acknowledgments
+
+The API used for getting the recipe data
+* [TheMealDB](https://www.themealdb.com/api.php)
