@@ -1,31 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet,
     Text,
     View,
     TextInput,
-    Button,
-    Picker,
     FlatList,
     Image }
 from 'react-native';
-import { Icon, FontAwesomeIcon } from 'react-native-elements';
+import { Picker } from '@react-native-picker/picker'
+import { Icon } from 'react-native-elements';
 
- // varmaan joku alasvetovalikko mistä valitsee esim.
-    // "raaka-aine" "maa" "ainesosa" "kategoria" tms.
-    // sen jälkeen hakusana
-    // omat napit "näytä kaikki reseptit" ja "random resepti"
-    // maksullinen versio mahdollistaisi myös checkbox-tyyppisen haun usean kriteerin perusteella
 
 export default function Search({ navigation }) {
     const [hakusana, setHakusana] = useState('');
-    const [hakuehto, setHakuehto] = useState('ainesosa'); //alasvetovalikosta otetaan steittiin
+    const [hakuehto, setHakuehto] = useState('ingredient'); //alasvetovalikosta otetaan steittiin
     const [reseptit, setReseptit] = useState([]);
-    const [listaValinta, setListaValinta] = useState('kategoriat'); //alasvetovalikosta otetaan steittiin
-    const [kategoriat, setKategoriat] = useState([]);
-    const [maat, setMaat] = useState([]);
    
     const haeReseptit = () => {
-        if (hakuehto === "ainesosa") {
+        if (hakuehto === "ingredient") {
             // hae ainesosan perusteella esim. tomato
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${hakusana}`)
             .then(response => response.json())
@@ -38,7 +29,7 @@ export default function Search({ navigation }) {
             })
             .catch(err => console.error("something went wrong"))
         }
-        else if (hakuehto === "maanosa") {
+        else if (hakuehto === "area") {
             // hae maan perusteella esim. japanese
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${hakusana}`)
             .then(response => response.json())
@@ -51,7 +42,7 @@ export default function Search({ navigation }) {
             })
             .catch(err => console.error("something went wrong"))
         }
-        else if (hakuehto === "kategoria") {
+        else if (hakuehto === "category") {
             // hae kategorialla esim. dessert
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${hakusana}`)
             .then(response => response.json())
@@ -65,7 +56,7 @@ export default function Search({ navigation }) {
             })
             .catch(err => console.error("something went wrong"))
         }
-        else if (hakuehto === "nimi") {
+        else if (hakuehto === "name") {
             // hae nimellä esim. big mac
             fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${hakusana}`)
             .then(response => response.json())
@@ -94,58 +85,26 @@ export default function Search({ navigation }) {
         .catch(err => console.error("something went wrong"))
     }
 
-   /*  const haeLista = () => {
-        if(listaValinta === "kategoriat") {
-            fetch(`https://www.themealdb.com/api/json/v1/1/list.php?c=list`)
-                .then(response => response.json())
-                .then((data) => {
-                if (data.meals == null) {
-                    alert("No results");
-                } else {
-                    setKategoriat(data.meals)
-                    console.log('kategorian perusteella')
-                }
-                })
-                .catch(err => console.error("something went wrong"))
-        }
-        else if(listaValinta === "maat") {
-            fetch(`https://www.themealdb.com/api/json/v1/1/list.php?a=list`)
-            .then(response => response.json())
-                    .then((data) => {
-                    if (data.meals == null) {
-                        alert("No results");
-                    } else {
-                        setMaat(data.meals)
-                        console.log('maat')
-                        console.log(hakuehto)
-                    }
-                    })
-                    .catch(err => console.error("something went wrong"))
-        }
-    } */
-
     return(
         <View style={styles.container}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 50 }}>
+            <Text style={{marginBottom: 10, fontStyle: 'italic', fontSize: 25}}>What would you like to eat?</Text>
+            <View style={{marginLeft: 140, marginRight: 80, flexDirection: 'row', justifyContent: 'center'}}>
                 <Picker
                 selectedValue={hakuehto}
                 style={{ height: 50, width: 130 }}
                 onValueChange={(itemValue, itemIndex) => setHakuehto(itemValue)} >
-                    <Picker.Item label="ainesosa" value="ainesosa" />
-                    <Picker.Item label="maanosa" value="maanosa" />
-                    <Picker.Item label="kategoria" value="kategoria" />
-                    <Picker.Item label="nimi" value="nimi" />
+                    <Picker.Item label="ingredient" value="ingredient" />
+                    <Picker.Item label="area" value="area" />
+                    <Picker.Item label="category" value="category" />
+                    <Picker.Item label="name" value="name" />
                 </Picker>
                 <TextInput style={styles.textinput}
-                    placeholder="hakusana"
+                    placeholder="type a keyword"
                     onChangeText={text => setHakusana(text)}
                     value={hakusana}
                 />
-            </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Button title="Hae resepti" onPress={haeReseptit} />
-                <Icon type ="material" name="casino" color="blue" onPress={haeRandomResepti} />
-                
+                <Icon type="material" name="search" color="blue" size={35} onPress={haeReseptit} />
+                <Icon type ="material" name="casino" color="blue" size={35} onPress={haeRandomResepti} />
             </View>
             <FlatList style={{width: 80 + '%'}}
                 data={reseptit}
@@ -160,19 +119,6 @@ export default function Search({ navigation }) {
                 </View>
                 }
             />
-            {/* <FlatList style={{width: 80 + '%'}}
-                data={kategoriat}
-                keyExtractor={item => item.idMeal}
-                renderItem={({item}) => 
-                <View style={{margin: 10}}>
-                    <Text
-                        style={{fontSize: 18, fontWeight: 'bold'}}
-                        onPress={() => navigation.navigate("FilteredList", { item })}>{item.strCategory}
-                    </Text>
-                    <Image style={{height: 50, width: 50}} source={{uri: item.strMealThumb}}></Image>
-                </View>
-                }
-            /> */}
         </View>
     );
 }
@@ -180,7 +126,7 @@ export default function Search({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },

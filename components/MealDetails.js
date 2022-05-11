@@ -8,24 +8,22 @@ import { ListItem, Icon } from 'react-native-elements';
 export default function MealDetails({ route }) {
     const { item } = route.params;
     const [resepti, setResepti] = useState([]);
-    const reseptiTeksti = JSON.stringify(resepti); //tietokantaan tekstimuodossa?
     const [ainesosaLista, setAinesosaLista] = useState([]);
     const [määrät, setMäärät] = useState([]);
     const [suosikit, setSuosikit] = useState([]);
-    // const [empty, setEmpty] = useState([]);
     
     const db = SQLite.openDatabase('recipes.db');
 
-    useEffect(() =>
+   useEffect(() =>
         {db.transaction(tx => {
-            tx.executeSql('create table if not exists recipe(id integer primary key not null, name text);'
+            tx.executeSql('create table if not exists recipes(idMeal integer primary key not null, strMeal text);'
         );  },
         null, updateList);
     }, []);
 
     const updateList = () => {
         db.transaction(tx => {
-            tx.executeSql('select * from recipe;', [], (_, { rows }) =>
+            tx.executeSql('select * from recipes;', [], (_, { rows }) =>
                 setSuosikit(rows._array)
             );
         }, null, null);
@@ -33,25 +31,17 @@ export default function MealDetails({ route }) {
     
     const addToFavorites = () => {
         db.transaction(tx => {
-        tx.executeSql('insert into recipe (id, name) values (?, ?);',
+        tx.executeSql('insert into recipes(idMeal, strMeal) values (?, ?);',
         [resepti.idMeal, resepti.strMeal]);
-        }, null, updateList);
-        console.log(suosikit)
-    };
-
-    const deleteItem = (id) => {
-        db.transaction(tx => {
-            tx.executeSql('delete from recipe where id = ?;',
-            [id]);
         }, null, updateList);
         viewTable();
     };
 
-
+    //apufunktio jolla tietokantataulu tulostuu konsoliin
     const viewTable = () => {
         db.transaction((tx) => {
             tx.executeSql(
-            'SELECT * FROM recipe',
+            'SELECT * FROM recipes',
             [],
             (tx, results) => {
                 var temp = [];
@@ -117,25 +107,21 @@ export default function MealDetails({ route }) {
             .catch(err => console.log("Error", "something went wrong"))
         }, [item]))
 
-        //pitäisi saada lähetettyä ajantasainen suosikit-lista profile-komponenttiin
-
-    // TODO: ehdollisuus suosikkinappulaan eli renderöikö "lisää" vai "poista"
 
     return (
         <ScrollView>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontSize: 18, marginRight: 15}}>{resepti.strMeal}</Text>
+                <Text style={{fontSize: 20, marginRight: 15}}>{resepti.strMeal}</Text>
                 <Icon type="material" color="red" name="favorite-border" onPress={addToFavorites} />
             </View>
-            <Button title="delete fav" onPress={() => deleteItem(resepti.idMeal)} />
-            <Image style={{height: 200, width: 200}} source={{uri: resepti.strMealThumb }}></Image>
+            <Image style={{height: 200, width: 200, alignItems: 'right'}} source={{uri: resepti.strMealThumb }}></Image>
             <Text style={{fontSize: 18}}>Ingredients:</Text>
-            <FlatList style={{width: 80 + '%'}}
+            <FlatList style={{flex: 1, width: 80 + '%', height: 50 + '%'}}
                 data={ainesosaLista}
                 extraData={määrät}
                 keyExtractor={item => item.index}
                 renderItem={({ item, index }) => (
-                    <ListItem bottomDivider>
+                    <ListItem>
                         <ListItem.Content>
                             <ListItem.Title>{item}</ListItem.Title>
                             <ListItem.Subtitle>{määrät[index]}</ListItem.Subtitle>
@@ -152,7 +138,7 @@ export default function MealDetails({ route }) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#ffffff',
       alignItems: 'center',
       justifyContent: 'center',
     },

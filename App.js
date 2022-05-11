@@ -1,12 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { getFocusedRouteNameFromRoute, NavigationContainer } from'@react-navigation/native';
+import { NavigationContainer } from'@react-navigation/native';
 import { createBottomTabNavigator } from'@react-navigation/bottom-tabs';
 import { Icon } from 'react-native-elements';
 import Search from './components/Search';
-import Profile from './components/Profile';
+import Favorites from './components/Favorites';
 import MealDetails from './components/MealDetails';
-import FilteredList from './components/FilteredList';
+
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -19,7 +17,7 @@ export default function App() {
               tabBarIcon: () => (
                 <Icon name="search" color="blue" />)
             }} />
-        <Tab.Screen name='Profile' component={Profile}
+        <Tab.Screen name='Favorites' component={Favorites}
             options={{
                   tabBarIcon: () => (
                     <Icon name="favorite" color="blue" />)
@@ -30,22 +28,7 @@ export default function App() {
               tabBarVisible:false // mealdetails-nimistä täppää ei näy alapalkissa
       
             }}/>
-        <Tab.Screen name='FilteredList' component={FilteredList}
-          options={{
-            tabBarButton: () => null,
-            tabBarVisible:false // filteredlist-nimistä täppää ei näy alapalkissa
-    
-          }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
