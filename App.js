@@ -20,7 +20,7 @@ export default function App() {
         <Tab.Screen name='Favorites' component={Favorites}
             options={{
                   tabBarIcon: () => (
-                    <Icon name="favorite" color="blue" />)
+                    <Icon name="favorite-border" color="blue" />)
                 }} />
         <Tab.Screen name='MealDetails' component={MealDetails}
             options={{
