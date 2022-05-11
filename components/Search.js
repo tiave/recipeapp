@@ -14,6 +14,7 @@ export default function Search({ navigation }) {
     const [hakusana, setHakusana] = useState('');
     const [hakuehto, setHakuehto] = useState('ingredient'); //alasvetovalikosta otetaan steittiin
     const [reseptit, setReseptit] = useState([]);
+
    
     const haeReseptit = () => {
         if (hakuehto === "ingredient") {
@@ -84,6 +85,7 @@ export default function Search({ navigation }) {
         })
         .catch(err => console.error("something went wrong"))
     }
+    
 
     return(
         <View style={styles.container}>

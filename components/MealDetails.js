@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, FlatList, Button } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
-import { ListItem, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 
 
 export default function MealDetails({ route }) {
@@ -11,7 +11,7 @@ export default function MealDetails({ route }) {
     const [ainesosaLista, setAinesosaLista] = useState([]);
     const [määrät, setMäärät] = useState([]);
     const [suosikit, setSuosikit] = useState([]);
-    
+   
     const db = SQLite.openDatabase('recipes.db');
 
     useEffect(() =>
@@ -35,12 +35,12 @@ export default function MealDetails({ route }) {
         tx.executeSql('insert into recipe(idMeal, strMeal) values (?, ?);',
         [resepti.idMeal, resepti.strMeal]);
         }, null, updateList);
-        viewTable();
-        alert('added! <3');
+        //viewTable();
+        alert("recipe added ^_^")
     };
 
     //apufunktio jolla tietokantataulu tulostuu konsoliin
-    const viewTable = () => {
+   /*  const viewTable = () => {
         db.transaction((tx) => {
             tx.executeSql(
             'SELECT * FROM recipe',
@@ -55,8 +55,10 @@ export default function MealDetails({ route }) {
             );
         });
    
-    }
+    } */
 
+    //tulevaisuudessa loopin avulla ainesosalistan teko
+    //siinä samalla katsoisi onko "" arvo -> ei lisätä listaan
     useFocusEffect(
         useCallback(() => {
             fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${item.idMeal}`)
@@ -109,12 +111,12 @@ export default function MealDetails({ route }) {
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', backgroundColor: '#ffffff' }}>
             <View style={{flexDirection: 'row'}}>
                 <Text style={{fontSize: 20, marginLeft: 10, marginRight: 10, marginBottom: 5}}>{resepti.strMeal}</Text>
-                <Icon type="material" color="blue" name="favorite" onPress={addToFavorites} />
+                <Icon type="material" color="blue" name="favorite" onPress={addToFavorites}/>
             </View>
             <View style={{flexDirection: 'row', flex: 1}}>
             <Image style={{height: 180, width: 180, marginLeft: 10}} source={{uri: resepti.strMealThumb }}></Image>
             <View>
-            <Text style={{fontSize: 18, marginBottom: 5, marginLeft: 10}}>Ingredients:</Text>
+            <Text style={styles.text}>Ingredients:</Text>
             <FlatList
                 data={ainesosaLista}
                 extraData={määrät}
@@ -127,7 +129,7 @@ export default function MealDetails({ route }) {
                 )}/>
             </View>
             </View>
-            <Text style={{fontSize: 18, marginBottom: 5, marginLeft: 10}}>How to make</Text>
+            <Text style={styles.text}>How to make</Text>
             <Text style={{width: 80 + '%', marginLeft: 10}}>{resepti.strInstructions}</Text>
         </ScrollView>
     )
@@ -135,15 +137,14 @@ export default function MealDetails({ route }) {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#ffffff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    textinput: {
-      borderColor: 'grey',
-      width: 70 + '%',
-      margin: 8
-    }
-  
+    text: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        marginLeft: 10}
   });

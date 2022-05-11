@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
 export default function Profile({navigation}) {
-    //const [empty, setEmpty] = useState([]);
     const [suosikit, setSuosikit] = useState([]);
     const db = SQLite.openDatabase('recipes.db');
 
